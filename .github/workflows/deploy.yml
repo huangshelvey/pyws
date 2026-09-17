@@ -2,7 +2,7 @@ name: Deploy to Unikraft Cloud
 
 on:
   push:
-    branches: [ "main" ] 
+    branches: [ "main" ] # 或者你的默认分支名称
 
 jobs:
   deploy:
@@ -11,15 +11,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 使用官方提供的 Unikraft CLI Action
       - name: Install Unikraft CLI (KraftKit)
         uses: unikraft/setup-action@v1
 
-      # 登录并部署到 Unikraft Cloud
       - name: Run on Unikraft Cloud
-        env: 
-          UKC_TOKEN: ${{ secrets.UKC_TOKEN }} # 需要在仓库 Secrets 中配置你的 Unikraft 凭证
+        env:
+          UKC_TOKEN: ${{ secrets.UKC_TOKEN }}
         run: |
+          # 尝试通过绝对路径或直接使用 setup-action 提供的环境运行
+          # 检查 kraft 是否在常见路径，或者直接调用
+          export PATH=$PATH:/home/runner/.local/bin
           kraft run \
             --metro fra \
             --publish 443:8080/http+tls \
