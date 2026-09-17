@@ -2,7 +2,7 @@ name: Deploy to Unikraft Cloud
 
 on:
   push:
-    branches: [ "main" ] # 或者你的默认分支名称
+    branches: [ "main" ] # 对应你的默认分支
 
 jobs:
   deploy:
@@ -18,9 +18,8 @@ jobs:
         env:
           UKC_TOKEN: ${{ secrets.UKC_TOKEN }}
         run: |
-          # 尝试通过绝对路径或直接使用 setup-action 提供的环境运行
-          # 检查 kraft 是否在常见路径，或者直接调用
-          export PATH=$PATH:/home/runner/.local/bin
+          # 显式将 kraft 路径加入环境变量并运行
+          export PATH="$HOME/.local/bin:$PATH"
           kraft run \
             --metro fra \
             --publish 443:8080/http+tls \
