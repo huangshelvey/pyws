@@ -2,7 +2,7 @@ name: Deploy to Unikraft Cloud
 
 on:
   push:
-    branches: [ "main" ] # 对应你的默认分支
+    branches: [ "main" ]
 
 jobs:
   deploy:
@@ -11,15 +11,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Unikraft CLI (KraftKit)
-        uses: unikraft/setup-action@v1
+      - name: Install KraftKit directly
+        run: |
+          # 直接下载官方编译好的 kraft 并放到系统 bin 目录下
+          curl --proto '=https' --tlsv1.2 -sSf https://kraftkit.sh | sh
+          sudo mv ~/.local/bin/kraft /usr/local/bin/kraft || true
+          kraft version
 
       - name: Run on Unikraft Cloud
         env:
           UKC_TOKEN: ${{ secrets.UKC_TOKEN }}
         run: |
-          # 显式将 kraft 路径加入环境变量并运行
-          export PATH="$HOME/.local/bin:$PATH"
           kraft run \
             --metro fra \
             --publish 443:8080/http+tls \
