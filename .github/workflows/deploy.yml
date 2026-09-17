@@ -11,19 +11,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install KraftKit directly
-        run: |
-          # 直接下载官方编译好的 kraft 并放到系统 bin 目录下
-          curl --proto '=https' --tlsv1.2 -sSf https://kraftkit.sh | sh
-          sudo mv ~/.local/bin/kraft /usr/local/bin/kraft || true
-          kraft version
+      - name: Install KraftKit
+        run: curl --proto '=https' --tlsv1.2 -sSf https://kraftkit.sh | sh
 
       - name: Run on Unikraft Cloud
         env:
           UKC_TOKEN: ${{ secrets.UKC_TOKEN }}
-        run: |
-          kraft run \
-            --metro fra \
-            --publish 443:8080/http+tls \
-            --scale-to-zero policy=on,cooldown-time=1000 \
-            --image ghcr.io/huangshelvey/uni:latest
+        run: /home/runner/.local/bin/kraft run --metro fra --publish 443:8080/http+tls --scale-to-zero policy=on,cooldown-time=1000 --image ghcr.io/huangshelvey/uni:latest
